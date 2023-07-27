@@ -25,14 +25,16 @@ namespace PeopleDataV1.Data.Mappings
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.Property(x => x.Role)
-                .HasConversion<string>()
-                .HasMaxLength(20)
+            builder.Property(x => x.Email)
+                .HasMaxLength(50)
                 .IsRequired();
 
             builder.Property(x => x.CreateDate)
-                .ValueGeneratedOnAdd()
-                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+                    .IsRequired();
+
+            builder
+                .HasIndex(x => x.UserName, "IX_User_UserName")
+                .IsUnique();
         }
     }
 }

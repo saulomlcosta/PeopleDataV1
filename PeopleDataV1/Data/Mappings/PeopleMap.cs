@@ -44,8 +44,9 @@ namespace PeopleDataV1.Data.Mappings
                 .HasMaxLength(100);
 
             builder.HasOne(p => p.User)
-                .WithMany()
-                .HasForeignKey(p => p.UserId)
+                .WithMany(x => x.Peoples)
+                .HasForeignKey("UserId")
+                .HasConstraintName("FK_User_People")
                 .OnDelete(DeleteBehavior.Cascade); 
         }
     }

@@ -12,7 +12,7 @@ using PeopleDataV1.Data;
 namespace PeopleDataV1.Migrations
 {
     [DbContext(typeof(DbContextClass))]
-    [Migration("20230717135342_Initial")]
+    [Migration("20230726170523_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,8 +80,12 @@ namespace PeopleDataV1.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateDate")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -93,11 +97,6 @@ namespace PeopleDataV1.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -105,18 +104,27 @@ namespace PeopleDataV1.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex(new[] { "UserName" }, "IX_User_UserName")
+                        .IsUnique();
+
                     b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("PeopleDataV1.Entities.People", b =>
                 {
                     b.HasOne("PeopleDataV1.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Peoples")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_User_People");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PeopleDataV1.Entities.User", b =>
+                {
+                    b.Navigation("Peoples");
                 });
 #pragma warning restore 612, 618
         }

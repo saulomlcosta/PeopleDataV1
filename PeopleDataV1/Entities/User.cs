@@ -5,15 +5,18 @@ namespace PeopleDataV1.Entities
 {
     public class User : Entity
     {
-        public User(Guid id) : base(id)
+        public User() : base(Guid.NewGuid())
         {
+            
             CreateDate = DateTime.Now;
         }
 
-        public string UserName { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public ERole Role { get; set; }
-        public DateTime CreateDate { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public DateTime CreateDate { get; set; } = DateTime.UtcNow;
+
+        public ICollection<People> Peoples { get; set; } = new List<People>();
     }
 }

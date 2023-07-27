@@ -1,51 +1,68 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using PeopleDataV1.Data;
 using PeopleDataV1.Entities;
 using PeopleDataV1.Services.Interfaces;
-using System.Xml.Linq;
+using PeopleDataV1.ViewModels.Users;
 
 namespace PeopleDataV1.Services
 {
-    public class UserService : IBaseService<User>
+    public class UserService : IUserService
     {
         private readonly DbContextClass _context;
+        private readonly IMapper _mapper;
 
-        public UserService(DbContextClass context)
+        public UserService(DbContextClass context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public User Add(User model)
+        public async Task<IEnumerable<UserViewModel>> GetAllAsync()
         {
-            var result = _context.Users.Add(model);
-            _context.SaveChanges();
-
-            return result.Entity;
+            var users = await _context.Users.ToListAsync();           
+            return _mapper.Map<IEnumerable<UserViewModel>>(users);
         }
 
-        public bool Delete(Guid id)
+        public async Task<UserViewModel> GetByIdAsync(Guid id)
         {
-            var filteredData = _context.Users.Where(x => x.Id == id).FirstOrDefault();
-            var result = _context.Remove(filteredData);
-            _context.SaveChanges();
-            return result != null ? true : false;
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<UserViewModel>(user);
         }
 
-        public IEnumerable<User> GetAll()
+        public async Task<UserViewModel> AddAsync(RegisterViewModel model)
         {
-            return _context.Users.ToList();
+            var user = _mapper.Map<User>(model);
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<UserViewModel>(user);
         }
 
-        public User GetById(Guid id)
+        public async Task<UserViewModel> UpdateAsync(UpdateViewModel model)
         {
-            return _context.Users.Where(x => x.Id == id).FirstOrDefault();
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == model.Id);      
+
+            _mapper.Map(model, user);
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<UserViewModel>(user);
         }
 
-        public User Update(User model)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            var result = _context.Users.Update(model);
-            _context.SaveChanges();
-            return result.Entity;
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user is null)
+                return false;
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

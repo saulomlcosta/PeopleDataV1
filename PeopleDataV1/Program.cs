@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using PeopleDataV1.Data;
 using PeopleDataV1.Entities;
 using PeopleDataV1.Services;
@@ -6,8 +7,10 @@ using PeopleDataV1.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IBaseService<User>, UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPeopleService, PeopleService>();
 builder.Services.AddDbContext<DbContextClass>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

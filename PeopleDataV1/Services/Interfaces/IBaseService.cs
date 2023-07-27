@@ -2,10 +2,10 @@
 {
     public interface IBaseService<T> where T : class
     {
-        public IEnumerable<T> GetAll();
-        public T GetById(Guid id);
-        public T Add(T model);
-        public T Update(T model);
-        public bool Delete(Guid id);
+         IEnumerable<T> GetAll();
+         T GetById(Guid id);
+         T Add(T model);
+         T Update(T model);
+         bool Delete(Guid id);
     }
 }
