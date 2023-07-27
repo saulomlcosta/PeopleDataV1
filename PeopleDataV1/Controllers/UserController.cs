@@ -32,18 +32,10 @@ namespace PeopleDataV1.Controllers
                 }
 
                 return Ok(new ResultViewModel<IEnumerable<UserViewModel>>(users));
-            }
-            catch (DbUpdateException ex)
+            }           
+            catch
             {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X08 - DB Update failed: " + ex.Message));
-            }
-            catch (SqlException ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X09 - SQL Exception: " + ex.Message));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X10 - Server failed: " + ex.Message));
+                throw;
             }
         }
 
@@ -59,17 +51,9 @@ namespace PeopleDataV1.Controllers
 
                 return Ok(new ResultViewModel<UserViewModel>(user));
             }
-            catch (DbUpdateException ex)
+            catch
             {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X08 - DB Update failed: " + ex.Message));
-            }
-            catch (SqlException ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X09 - SQL Exception: " + ex.Message));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X10 - Server failed: " + ex.Message));
+                throw;
             }
         }
 
@@ -83,17 +67,9 @@ namespace PeopleDataV1.Controllers
                 var createUser = await _userService.AddAsync(model);
                 return Created($"user/{createUser.Id}", new ResultViewModel<UserViewModel>(createUser));
             }
-            catch (DbUpdateException ex)
+            catch
             {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X08 - DB Update failed: " + ex.Message));
-            }
-            catch (SqlException ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X09 - SQL Exception: " + ex.Message));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X10 - Server failed: " + ex.Message));
+                throw;
             }
         }
 
@@ -109,17 +85,9 @@ namespace PeopleDataV1.Controllers
                 return Ok(new ResultViewModel<UserViewModel>(updateUser));
 
             }
-            catch (DbUpdateException ex)
+            catch
             {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X08 - DB Update failed: " + ex.Message));
-            }
-            catch (SqlException ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X09 - SQL Exception: " + ex.Message));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X10 - Server failed: " + ex.Message));
+                throw;
             }
         }
 
@@ -134,17 +102,9 @@ namespace PeopleDataV1.Controllers
 
                 return Ok(new ResultViewModel<UserViewModel>("User deleted"));
             }
-            catch (DbUpdateException ex)
+            catch
             {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X08 - DB Update failed: " + ex.Message));
-            }
-            catch (SqlException ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X09 - SQL Exception: " + ex.Message));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ResultViewModel<UserViewModel>("05X10 - Server failed: " + ex.Message));
+                throw;
             }
         }
     }
