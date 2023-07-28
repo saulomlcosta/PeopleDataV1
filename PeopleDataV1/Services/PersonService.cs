@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using PeopleDataV1.Data;
 using PeopleDataV1.Entities;
 using PeopleDataV1.Services.Interfaces;
+using PeopleDataV1.ViewModels;
 using PeopleDataV1.ViewModels.Persons;
 using System.Globalization;
 
@@ -21,10 +22,24 @@ namespace PeopleDataV1.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PersonViewModel>> GetAllAsync()
+        public async Task<PagedResult<PersonViewModel>> GetAllAsync(int page, int pageSize)
         {
-            var persons = await _context.Persons.ToListAsync();
-            return _mapper.Map<IEnumerable<PersonViewModel>>(persons);
+            var totalCount = await _context.Persons.CountAsync();
+
+            var persons = await _context
+                .Persons
+                .Include(x => x.User)
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var pagedResult = new PagedResult<PersonViewModel>
+            {
+                Items = _mapper.Map<IEnumerable<PersonViewModel>>(persons),
+                TotalCount = totalCount
+            };
+
+            return pagedResult;
         }
 
         public async Task<PersonViewModel> GetByIdAsync(Guid id)

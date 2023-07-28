@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Hosting;
 using PeopleDataV1.Extensions;
 using PeopleDataV1.Services.Interfaces;
 using PeopleDataV1.ViewModels;
@@ -9,26 +11,35 @@ namespace PeopleDataV1.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class PeopleController : ControllerBase
+    public class PersonController : ControllerBase
     {
         private readonly IPeopleservice _peopleservice;
 
-        public PeopleController(IPeopleservice Peopleservice)
+        public PersonController(IPeopleservice Peopleservice)
         {
             _peopleservice = Peopleservice;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(
+            [FromQuery] int page = 0,
+            [FromQuery] int pageSize = 25
+            )
         {
             try
             {
-                var persons = await _peopleservice.GetAllAsync();
+                var result = await _peopleservice.GetAllAsync(page, pageSize);
 
-                if (persons is null)
+                if (result.Items is null)
                     return NoContent();
 
-                return Ok(new ResultViewModel<IEnumerable<PersonViewModel>>(persons));
+                return Ok(new ResultViewModel<dynamic>(new
+                {
+                    result.TotalCount,
+                    page,
+                    pageSize,
+                    result.Items
+                }));
             }
             catch
             {
