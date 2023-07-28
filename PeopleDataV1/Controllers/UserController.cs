@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using PeopleDataV1.Extensions;
 using PeopleDataV1.Services.Interfaces;
 using PeopleDataV1.ViewModels;
@@ -8,7 +6,7 @@ using PeopleDataV1.ViewModels.Users;
 
 namespace PeopleDataV1.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -27,9 +25,7 @@ namespace PeopleDataV1.Controllers
                 var users = await _userService.GetAllAsync();
 
                 if (users is null)
-                {
                     return NoContent(); 
-                }
 
                 return Ok(new ResultViewModel<IEnumerable<UserViewModel>>(users));
             }           
@@ -58,10 +54,11 @@ namespace PeopleDataV1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(RegisterViewModel model)
+        public async Task<IActionResult> PostAsync(RegisterUserViewModel model)
         {
             if(!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<UserViewModel>(ModelState.GetErrors()));
+
             try
             {
                 var createUser = await _userService.AddAsync(model);
@@ -74,7 +71,7 @@ namespace PeopleDataV1.Controllers
         }
 
         [HttpPut()]
-        public async Task<IActionResult> Put(UpdateViewModel model)
+        public async Task<IActionResult> Put(UpdateUserViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<UserViewModel>(ModelState.GetErrors()));
@@ -97,10 +94,14 @@ namespace PeopleDataV1.Controllers
             try
             {
                 bool userDeleted = await _userService.DeleteAsync(id);
+
                 if (!userDeleted)
                     return NotFound(new ResultViewModel<UserViewModel>("User not found"));
 
-                return Ok(new ResultViewModel<UserViewModel>("User deleted"));
+                return Ok(new ResultViewModel<dynamic>(new
+                {
+                   Message = "User Deleted Successfully!"
+                }));
             }
             catch
             {

@@ -1,15 +1,13 @@
-﻿using PeopleDataV1.Entities;
-using PeopleDataV1.ViewModels.Peoples;
-using PeopleDataV1.ViewModels.Users;
+﻿using PeopleDataV1.ViewModels.Peoples;
 
 namespace PeopleDataV1.Services.Interfaces
 {
-    public interface IPeopleService
+    public interface IPeopleservice
     {
-        IEnumerable<People> GetAll();
-        People GetById(Guid id);
-        People Add(RegisterPeopleViewModel model);
-        People Update(People model);
-        bool Delete(Guid id);
+        Task<IEnumerable<PeopleViewModel>> GetAllAsync();
+        Task<PeopleViewModel> GetByIdAsync(Guid id);
+        Task<PeopleViewModel> AddAsync(RegisterPeopleViewModel model);
+        Task<PeopleViewModel> UpdateAsync(UpdatePeopleViewModel model);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

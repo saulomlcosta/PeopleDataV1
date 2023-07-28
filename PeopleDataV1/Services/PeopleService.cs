@@ -1,62 +1,71 @@
-﻿using PeopleDataV1.Data;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using PeopleDataV1.Data;
 using PeopleDataV1.Entities;
 using PeopleDataV1.Services.Interfaces;
 using PeopleDataV1.ViewModels.Peoples;
-using PeopleDataV1.ViewModels.Users;
+
 
 namespace PeopleDataV1.Services
 {
-    public class PeopleService : IPeopleService
+    public class Peopleservice : IPeopleservice
     {
         private readonly DbContextClass _context;
+        private readonly IMapper _mapper;
 
-        public PeopleService(DbContextClass context)
+        public Peopleservice(DbContextClass context, IMapper mapper)
         {
             _context = context;
-        }
-        public People Add(RegisterPeopleViewModel model)
-        {
-            var people = new People
-            {
-                UserId = model.UserId,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Sex = model.Sex,
-                Email = model.Email,
-                Phone = model.Phone,
-                DateOfBirth = model.DateOfBirth,
-                JobTitle = model.JobTitle
-            };
-
-            var result = _context.Peoples.Add(people);
-            _context.SaveChanges();
-
-            return result.Entity;
-        }      
-
-        public bool Delete(Guid id)
-        {
-            var filteredData = _context.Peoples.Where(x => x.Id == id).FirstOrDefault();
-            var result = _context.Remove(filteredData);
-            _context.SaveChanges();
-            return result != null ? true : false;
+            _mapper = mapper;
         }
 
-        public IEnumerable<People> GetAll()
+        public async Task<IEnumerable<PeopleViewModel>> GetAllAsync()
         {
-            return _context.Peoples.ToList();
+            var persons = await _context.Peoples.ToListAsync();
+            return _mapper.Map<IEnumerable<PeopleViewModel>>(persons);
         }
 
-        public People GetById(Guid id)
+        public async Task<PeopleViewModel> GetByIdAsync(Guid id)
         {
-            return _context.Peoples.Where(x => x.Id == id).FirstOrDefault();
+            var person = await _context.Peoples.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<PeopleViewModel>(person);
         }
 
-        public People Update(People model)
+        public async Task<PeopleViewModel> AddAsync(RegisterPeopleViewModel model)
         {
-            var result = _context.Peoples.Update(model);
-            _context.SaveChanges();
-            return result.Entity;
+            var person = _mapper.Map<People>(model);
+
+            _context.Peoples.Add(person);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<PeopleViewModel>(person);
         }
+
+        public async Task<PeopleViewModel> UpdateAsync(UpdatePeopleViewModel model)
+        {
+            var person = await _context.Peoples.FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            _mapper.Map(model, person);
+
+            _context.Peoples.Update(person);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<PeopleViewModel>(person);
+        }
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var person = await _context.Peoples.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (person is null)
+                return false;
+
+            _context.Peoples.Remove(person);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
     }
 }

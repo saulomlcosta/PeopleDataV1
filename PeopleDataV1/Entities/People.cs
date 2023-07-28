@@ -1,6 +1,6 @@
 ﻿using PeopleDataV1.Extras.Entities;
 using PeopleDataV1.Extras.Enums;
-using System.Xml.Linq;
+using System.Text.Json.Serialization;
 
 namespace PeopleDataV1.Entities
 {
@@ -11,6 +11,7 @@ namespace PeopleDataV1.Entities
         }
 
         public Guid UserId { get; set; }
+        [JsonIgnore]
         public User User { get; set; } = null!;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

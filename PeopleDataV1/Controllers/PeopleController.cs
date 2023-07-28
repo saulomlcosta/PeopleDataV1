@@ -1,52 +1,114 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PeopleDataV1.Entities;
+using PeopleDataV1.Extensions;
 using PeopleDataV1.Services.Interfaces;
+using PeopleDataV1.ViewModels;
 using PeopleDataV1.ViewModels.Peoples;
-using PeopleDataV1.ViewModels.Users;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PeopleDataV1.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class PeopleController : ControllerBase
     {
-        private readonly IPeopleService _peopleService;
+        private readonly IPeopleservice _peopleservice;
 
-        public PeopleController(IPeopleService peopleService)
+        public PeopleController(IPeopleservice Peopleservice)
         {
-            _peopleService = peopleService;
+            _peopleservice = Peopleservice;
         }
 
         [HttpGet]
-        public IEnumerable<People> GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            return _peopleService.GetAll();
+            try
+            {
+                var persons = await _peopleservice.GetAllAsync();
+
+                if (persons is null)
+                    return NoContent();
+
+                return Ok(new ResultViewModel<IEnumerable<PeopleViewModel>>(persons));
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         [HttpGet("{id}")]
-        public People GetById(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            return _peopleService.GetById(id);
+            try
+            {
+                var person = await _peopleservice.GetByIdAsync(id);
+
+                if (person is null)
+                    return NotFound(new ResultViewModel<PeopleViewModel>("Person not found"));
+
+                return Ok(new ResultViewModel<PeopleViewModel>(person));
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         [HttpPost]
-        public People Create(RegisterPeopleViewModel model)
+        public async Task<IActionResult> PostAsync(RegisterPeopleViewModel model)
         {
-            return _peopleService.Add(model);
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<PeopleViewModel>(ModelState.GetErrors()));
+
+            try
+            {
+                var createPerson = await _peopleservice.AddAsync(model);
+                return Created($"person/{createPerson.Id}", new ResultViewModel<PeopleViewModel>(createPerson));
+            }
+            catch
+            {
+                throw;
+            }
         }
 
+
         [HttpPut()]
-        public People Put(People model)
+        public async Task<IActionResult> Put(UpdatePeopleViewModel model)
         {
-            return _peopleService.Update(model);
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<PeopleViewModel>(ModelState.GetErrors()));
+
+            try
+            {
+                var updatePerson = await _peopleservice.UpdateAsync(model);
+                return Ok(new ResultViewModel<PeopleViewModel>(updatePerson));
+
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         [HttpDelete("{id}")]
-        public bool Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            return _peopleService.Delete(id);
+            try
+            {
+                bool personDeleted = await _peopleservice.DeleteAsync(id);
+
+                if (!personDeleted)
+                    return NotFound(new ResultViewModel<PeopleViewModel>("Person not found"));
+
+                return Ok(new ResultViewModel<dynamic>(new
+                {
+                    Message = "Person Deleted Successfully!"
+                }));
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

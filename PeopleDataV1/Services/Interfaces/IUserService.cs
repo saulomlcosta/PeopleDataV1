@@ -7,8 +7,8 @@ namespace PeopleDataV1.Services.Interfaces
     {
         Task<IEnumerable<UserViewModel>> GetAllAsync();
         Task<UserViewModel> GetByIdAsync(Guid id);
-        Task<UserViewModel> AddAsync(RegisterViewModel model);
-        Task<UserViewModel> UpdateAsync(UpdateViewModel model);
+        Task<UserViewModel> AddAsync(RegisterUserViewModel model);
+        Task<UserViewModel> UpdateAsync(UpdateUserViewModel model);
         Task<bool> DeleteAsync(Guid id);
     }
 }

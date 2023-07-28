@@ -2,7 +2,7 @@
 
 namespace PeopleDataV1.ViewModels.Users
 {
-    public class UpdateViewModel
+    public class UpdateUserViewModel
     {
         [Required(ErrorMessage = "Id is required.")]
         public Guid Id { get; set; }

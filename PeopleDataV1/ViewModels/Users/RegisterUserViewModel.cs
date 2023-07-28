@@ -2,7 +2,7 @@
 
 namespace PeopleDataV1.ViewModels.Users
 {
-    public class RegisterViewModel
+    public class RegisterUserViewModel
     {
 
         [Required(ErrorMessage = "Username is required.")]

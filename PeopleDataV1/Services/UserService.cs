@@ -30,7 +30,7 @@ namespace PeopleDataV1.Services
             return _mapper.Map<UserViewModel>(user);
         }
 
-        public async Task<UserViewModel> AddAsync(RegisterViewModel model)
+        public async Task<UserViewModel> AddAsync(RegisterUserViewModel model)
         {
             var user = _mapper.Map<User>(model);
 
@@ -40,9 +40,9 @@ namespace PeopleDataV1.Services
             return _mapper.Map<UserViewModel>(user);
         }
 
-        public async Task<UserViewModel> UpdateAsync(UpdateViewModel model)
+        public async Task<UserViewModel> UpdateAsync(UpdateUserViewModel model)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == model.Id);      
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == model.Id);
 
             _mapper.Map(model, user);
 
