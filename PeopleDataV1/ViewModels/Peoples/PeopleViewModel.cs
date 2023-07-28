@@ -1,5 +1,4 @@
 ﻿using PeopleDataV1.Extras.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace PeopleDataV1.ViewModels.Peoples
 {

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using PeopleDataV1.Data;
 using PeopleDataV1.Entities;
 using PeopleDataV1.Services.Interfaces;
 using PeopleDataV1.ViewModels.Peoples;
-
+using System.Globalization;
 
 namespace PeopleDataV1.Services
 {
@@ -39,6 +41,26 @@ namespace PeopleDataV1.Services
             await _context.SaveChangesAsync();
 
             return _mapper.Map<PeopleViewModel>(person);
+        }
+
+        public async Task<int> ImportPeopleFromCsvAsync(Stream csvStream, Guid userId)
+        {
+            using (var reader = new StreamReader(csvStream))
+            using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)))
+            {
+                var records = csv.GetRecords<RegisterPeopleCsvViewModel>().ToList();
+                var people = _mapper.Map<List<People>>(records);
+
+                foreach (var person in people)
+                {
+                    person.UserId = userId;
+                }
+
+                _context.Peoples.AddRange(people);
+                await _context.SaveChangesAsync();
+
+                return people.Count;
+            }
         }
 
         public async Task<PeopleViewModel> UpdateAsync(UpdatePeopleViewModel model)

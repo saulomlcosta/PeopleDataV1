@@ -71,6 +71,36 @@ namespace PeopleDataV1.Controllers
             }
         }
 
+        [HttpPost("import/{id}")]
+        public async Task<IActionResult> ImportCsv([FromForm] IFormFile file, Guid id)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("No file or empty file provided.");
+                }
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;
+
+                    var importedPeopleCount = await _peopleservice.ImportPeopleFromCsvAsync(memoryStream, id);
+
+                    return Ok(new ResultViewModel<dynamic>(new
+                    {
+                        total = importedPeopleCount,
+                        message = "Imported Successfully!"
+                    }));
+                }
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
 
         [HttpPut()]
         public async Task<IActionResult> Put(UpdatePeopleViewModel model)

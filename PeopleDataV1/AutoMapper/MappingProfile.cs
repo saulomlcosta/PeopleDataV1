@@ -45,6 +45,10 @@ namespace PeopleDataV1.AutoMapper
               .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
               .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
               .ForMember(dest => dest.JobTitle, opt => opt.MapFrom(src => src.JobTitle));
-        }
+
+            CreateMap<RegisterPeopleCsvViewModel, People>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore()) 
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => Guid.NewGuid()));
+        }    
     }
 }

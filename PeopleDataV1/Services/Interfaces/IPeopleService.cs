@@ -9,5 +9,6 @@ namespace PeopleDataV1.Services.Interfaces
         Task<PeopleViewModel> AddAsync(RegisterPeopleViewModel model);
         Task<PeopleViewModel> UpdateAsync(UpdatePeopleViewModel model);
         Task<bool> DeleteAsync(Guid id);
+        Task<int> ImportPeopleFromCsvAsync(Stream csvStream, Guid userId);
     }
 }
