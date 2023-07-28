@@ -1,9 +1,9 @@
 ﻿using PeopleDataV1.Extras.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace PeopleDataV1.ViewModels.Peoples
+namespace PeopleDataV1.ViewModels.Persons
 {
-    public class UpdatePeopleViewModel
+    public class UpdatePersonViewModel
     {
         [Required(ErrorMessage = "Id is required.")]
         public Guid Id { get; set; }

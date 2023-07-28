@@ -14,7 +14,7 @@ namespace PeopleDataV1.Data
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<People> Peoples { get; set; }
+        public DbSet<Person> Persons { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

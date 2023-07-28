@@ -1,4 +1,4 @@
-﻿using PeopleDataV1.ViewModels.Peoples;
+﻿using PeopleDataV1.ViewModels.Persons;
 
 namespace PeopleDataV1.Services.Interfaces
 {

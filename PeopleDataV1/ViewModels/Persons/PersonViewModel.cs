@@ -1,8 +1,8 @@
 ﻿using PeopleDataV1.Extras.Enums;
 
-namespace PeopleDataV1.ViewModels.Peoples
+namespace PeopleDataV1.ViewModels.Persons
 {
-    public class PeopleViewModel
+    public class PersonViewModel
     {       
         public Guid Id { get; set; }
 

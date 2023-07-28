@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using PeopleDataV1.Entities;
 using PeopleDataV1.Extras.Enums;
-using PeopleDataV1.ViewModels.Peoples;
+using PeopleDataV1.ViewModels.Persons;
 using PeopleDataV1.ViewModels.Users;
 
 namespace PeopleDataV1.AutoMapper
@@ -25,9 +25,9 @@ namespace PeopleDataV1.AutoMapper
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
-            CreateMap<People, PeopleViewModel>();
+            CreateMap<Person, PersonViewModel>();
 
-            CreateMap<RegisterPeopleViewModel, People>()
+            CreateMap<RegisterPersonViewModel, Person>()
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.Sex, opt => opt.MapFrom(src => src.Sex))
@@ -36,7 +36,7 @@ namespace PeopleDataV1.AutoMapper
                 .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
                 .ForMember(dest => dest.JobTitle, opt => opt.MapFrom(src => src.JobTitle));
 
-            CreateMap<UpdatePeopleViewModel, People>()
+            CreateMap<UpdatePersonViewModel, Person>()
               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
               .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
               .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
@@ -46,7 +46,7 @@ namespace PeopleDataV1.AutoMapper
               .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
               .ForMember(dest => dest.JobTitle, opt => opt.MapFrom(src => src.JobTitle));
 
-            CreateMap<RegisterPeopleCsvViewModel, People>()
+            CreateMap<RegisterPersonCsvViewModel, Person>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()) 
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => Guid.NewGuid()));
         }    

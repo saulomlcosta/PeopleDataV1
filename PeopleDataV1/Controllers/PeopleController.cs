@@ -2,7 +2,7 @@
 using PeopleDataV1.Extensions;
 using PeopleDataV1.Services.Interfaces;
 using PeopleDataV1.ViewModels;
-using PeopleDataV1.ViewModels.Peoples;
+using PeopleDataV1.ViewModels.Persons;
 
 
 namespace PeopleDataV1.Controllers
@@ -28,7 +28,7 @@ namespace PeopleDataV1.Controllers
                 if (persons is null)
                     return NoContent();
 
-                return Ok(new ResultViewModel<IEnumerable<PeopleViewModel>>(persons));
+                return Ok(new ResultViewModel<IEnumerable<PersonViewModel>>(persons));
             }
             catch
             {
@@ -44,9 +44,9 @@ namespace PeopleDataV1.Controllers
                 var person = await _peopleservice.GetByIdAsync(id);
 
                 if (person is null)
-                    return NotFound(new ResultViewModel<PeopleViewModel>("Person not found"));
+                    return NotFound(new ResultViewModel<PersonViewModel>("Person not found"));
 
-                return Ok(new ResultViewModel<PeopleViewModel>(person));
+                return Ok(new ResultViewModel<PersonViewModel>(person));
             }
             catch
             {
@@ -55,15 +55,15 @@ namespace PeopleDataV1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(RegisterPeopleViewModel model)
+        public async Task<IActionResult> PostAsync(RegisterPersonViewModel model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new ResultViewModel<PeopleViewModel>(ModelState.GetErrors()));
+                return BadRequest(new ResultViewModel<PersonViewModel>(ModelState.GetErrors()));
 
             try
             {
                 var createPerson = await _peopleservice.AddAsync(model);
-                return Created($"person/{createPerson.Id}", new ResultViewModel<PeopleViewModel>(createPerson));
+                return Created($"person/{createPerson.Id}", new ResultViewModel<PersonViewModel>(createPerson));
             }
             catch
             {
@@ -103,15 +103,15 @@ namespace PeopleDataV1.Controllers
 
 
         [HttpPut()]
-        public async Task<IActionResult> Put(UpdatePeopleViewModel model)
+        public async Task<IActionResult> Put(UpdatePersonViewModel model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new ResultViewModel<PeopleViewModel>(ModelState.GetErrors()));
+                return BadRequest(new ResultViewModel<PersonViewModel>(ModelState.GetErrors()));
 
             try
             {
                 var updatePerson = await _peopleservice.UpdateAsync(model);
-                return Ok(new ResultViewModel<PeopleViewModel>(updatePerson));
+                return Ok(new ResultViewModel<PersonViewModel>(updatePerson));
 
             }
             catch
@@ -128,7 +128,7 @@ namespace PeopleDataV1.Controllers
                 bool personDeleted = await _peopleservice.DeleteAsync(id);
 
                 if (!personDeleted)
-                    return NotFound(new ResultViewModel<PeopleViewModel>("Person not found"));
+                    return NotFound(new ResultViewModel<PersonViewModel>("Person not found"));
 
                 return Ok(new ResultViewModel<dynamic>(new
                 {

@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace PeopleDataV1.Entities
 {
-    public class People : Entity
+    public class Person : Entity
     {
-        public People() : base(Guid.NewGuid())
+        public Person() : base(Guid.NewGuid())
         {
         }
 

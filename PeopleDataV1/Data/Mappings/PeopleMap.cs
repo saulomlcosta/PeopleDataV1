@@ -5,9 +5,9 @@ using PeopleDataV1.Entities;
 
 namespace PeopleDataV1.Data.Mappings
 {
-    public class PeopleMap : IEntityTypeConfiguration<People>
+    public class PeopleMap : IEntityTypeConfiguration<Person>
     {
-        public void Configure(EntityTypeBuilder<People> builder)
+        public void Configure(EntityTypeBuilder<Person> builder)
         {
             builder.ToTable("People"); 
 
@@ -44,7 +44,7 @@ namespace PeopleDataV1.Data.Mappings
                 .HasMaxLength(100);
 
             builder.HasOne(p => p.User)
-                .WithMany(x => x.Peoples)
+                .WithMany(x => x.Persons)
                 .HasForeignKey("UserId")
                 .HasConstraintName("FK_User_People")
                 .OnDelete(DeleteBehavior.Cascade); 

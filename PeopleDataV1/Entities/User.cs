@@ -17,6 +17,6 @@ namespace PeopleDataV1.Entities
         public string Email { get; set; } = string.Empty;
         public DateTime CreateDate { get; set; } = DateTime.UtcNow;
 
-        public ICollection<People> Peoples { get; set; } = new List<People>();
+        public ICollection<Person> Persons { get; set; } = new List<Person>();
     }
 }
