@@ -1,11 +1,17 @@
-﻿namespace PeopleDataV1.Services.Interfaces
+﻿using PeopleDataV1.ViewModels.Peoples;
+
+namespace PeopleDataV1.Services.Interfaces
 {
-    public interface IBaseService<T> where T : class
+    public interface IBaseService<TViewModel, TEntity, TRegisterViewModel, TUpdateViewModel>
+        where TViewModel : class
+        where TEntity : class
+        where TRegisterViewModel : class
+        where TUpdateViewModel : class
     {
-         IEnumerable<T> GetAll();
-         T GetById(Guid id);
-         T Add(T model);
-         T Update(T model);
-         bool Delete(Guid id);
+        Task<IEnumerable<TViewModel>> GetAllAsync();
+        Task<TViewModel> GetByIdAsync(Guid id);
+        Task<TViewModel> AddAsync(TRegisterViewModel model);
+        Task<TViewModel> UpdateAsync(TUpdateViewModel model);
+        Task<bool> DeleteAsync(Guid id);
     }
 }
