@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PeopleDataV1.Data.Mappings;
 using PeopleDataV1.Entities;
+using System.Reflection;
 
 namespace PeopleDataV1.Data
 {
@@ -23,9 +23,8 @@ namespace PeopleDataV1.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new UserMap());
-            modelBuilder.ApplyConfiguration(new PeopleMap());
-            
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
             base.OnModelCreating(modelBuilder);
         }
     }
