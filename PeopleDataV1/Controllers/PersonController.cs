@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Hosting;
 using PeopleDataV1.Extensions;
 using PeopleDataV1.Services.Interfaces;
 using PeopleDataV1.ViewModels;
 using PeopleDataV1.ViewModels.Persons;
-
 
 namespace PeopleDataV1.Controllers
 {
@@ -26,43 +23,29 @@ namespace PeopleDataV1.Controllers
             [FromQuery] int pageSize = 25
             )
         {
-            try
-            {
-                var result = await _peopleservice.GetAllAsync(page, pageSize);
+            var result = await _peopleservice.GetAllAsync(page, pageSize);
 
-                if (result.Items is null)
-                    return NoContent();
+            if (result.Items is null)
+                return NoContent();
 
-                return Ok(new ResultViewModel<dynamic>(new
-                {
-                    result.TotalCount,
-                    page,
-                    pageSize,
-                    result.Items
-                }));
-            }
-            catch
+            return Ok(new ResultViewModel<dynamic>(new
             {
-                throw;
-            }
+                result.TotalCount,
+                page,
+                pageSize,
+                result.Items
+            }));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            try
-            {
-                var person = await _peopleservice.GetByIdAsync(id);
+            var person = await _peopleservice.GetByIdAsync(id);
 
-                if (person is null)
-                    return NotFound(new ResultViewModel<PersonViewModel>("Person not found"));
+            if (person is null)
+                return NotFound(new ResultViewModel<PersonViewModel>("Person not found"));
 
-                return Ok(new ResultViewModel<PersonViewModel>(person));
-            }
-            catch
-            {
-                throw;
-            }
+            return Ok(new ResultViewModel<PersonViewModel>(person));
         }
 
         [HttpPost]
@@ -71,44 +54,30 @@ namespace PeopleDataV1.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<PersonViewModel>(ModelState.GetErrors()));
 
-            try
-            {
-                var createPerson = await _peopleservice.AddAsync(model);
-                return Created($"person/{createPerson.Id}", new ResultViewModel<PersonViewModel>(createPerson));
-            }
-            catch
-            {
-                throw;
-            }
+            var createPerson = await _peopleservice.AddAsync(model);
+            return Created($"person/{createPerson.Id}", new ResultViewModel<PersonViewModel>(createPerson));
         }
 
         [HttpPost("import/{id}")]
         public async Task<IActionResult> ImportCsv([FromForm] IFormFile file, Guid id)
         {
-            try
+            if (file == null || file.Length == 0)
             {
-                if (file == null || file.Length == 0)
-                {
-                    return BadRequest("No file or empty file provided.");
-                }
-
-                using (var memoryStream = new MemoryStream())
-                {
-                    await file.CopyToAsync(memoryStream);
-                    memoryStream.Position = 0;
-
-                    var importedPeopleCount = await _peopleservice.ImportPeopleFromCsvAsync(memoryStream, id);
-
-                    return Ok(new ResultViewModel<dynamic>(new
-                    {
-                        total = importedPeopleCount,
-                        message = "Imported Successfully!"
-                    }));
-                }
+                return BadRequest("No file or empty file provided.");
             }
-            catch
+
+            using (var memoryStream = new MemoryStream())
             {
-                throw;
+                await file.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                var importedPeopleCount = await _peopleservice.ImportPeopleFromCsvAsync(memoryStream, id);
+
+                return Ok(new ResultViewModel<dynamic>(new
+                {
+                    total = importedPeopleCount,
+                    message = "Imported Successfully!"
+                }));
             }
         }
 
@@ -119,37 +88,23 @@ namespace PeopleDataV1.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<PersonViewModel>(ModelState.GetErrors()));
 
-            try
-            {
-                var updatePerson = await _peopleservice.UpdateAsync(model);
-                return Ok(new ResultViewModel<PersonViewModel>(updatePerson));
+            var updatePerson = await _peopleservice.UpdateAsync(model);
 
-            }
-            catch
-            {
-                throw;
-            }
+            return Ok(new ResultViewModel<PersonViewModel>(updatePerson));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            try
-            {
-                bool personDeleted = await _peopleservice.DeleteAsync(id);
+            bool personDeleted = await _peopleservice.DeleteAsync(id);
 
-                if (!personDeleted)
-                    return NotFound(new ResultViewModel<PersonViewModel>("Person not found"));
+            if (!personDeleted)
+                return NotFound(new ResultViewModel<PersonViewModel>("Person not found"));
 
-                return Ok(new ResultViewModel<dynamic>(new
-                {
-                    Message = "Person Deleted Successfully!"
-                }));
-            }
-            catch
+            return Ok(new ResultViewModel<dynamic>(new
             {
-                throw;
-            }
+                Message = "Person Deleted Successfully!"
+            }));
         }
     }
 }
